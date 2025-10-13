@@ -12,40 +12,66 @@ A comprehensive application for managing software test cases with reusable test 
 
 ## Essential Features
 
+### Database Connection Management
+- **Functionality**: Configure and manage Microsoft SQL Server database connections with full connection string parameters
+- **Purpose**: Enable persistent storage of test case data in enterprise SQL Server databases with proper security
+- **Trigger**: User navigates to Database tab or clicks "New Connection"
+- **Progression**: Enter connection details (server, port, database, credentials) → Configure security options (encryption, certificate trust) → Set timeout parameters → Save and activate connection
+- **Success criteria**: Connection configurations are saved securely, users can switch between multiple database connections, and active connection status is clearly displayed
+
+### SQL Schema Management
+- **Functionality**: View complete SQL Server table schemas with columns, data types, primary keys, foreign keys, and indexes
+- **Purpose**: Document and communicate exact database structure needed for production deployment
+- **Trigger**: User clicks "View Schema" in Database tab
+- **Progression**: View schema definitions → Copy SQL CREATE statements → Reference table structures for integration
+- **Success criteria**: Complete SQL DDL statements are available for CatalogSteps, TestCases, and TestStepMemberships tables with all constraints
+
+### Query Executor with Prepared Statements
+- **Functionality**: Execute parameterized SQL queries with automatic SQL injection prevention through prepared statements
+- **Purpose**: Enable safe database operations for read, write, update, and delete operations
+- **Trigger**: User navigates to Query tab or loads sample query
+- **Progression**: Write or select query → Define parameters using @paramName syntax → Execute with parameter binding → View results and execution time
+- **Success criteria**: All queries use prepared statements, parameters are properly sanitized, and execution results show success/error status with timing
+
 ### Catalog Management
 - **Functionality**: Centralized repository of reusable test steps with metadata, Java class/method references, and SQL table associations
-- **Purpose**: Provides standardized, reusable building blocks for test case construction
+- **Purpose**: Provides standardized, reusable building blocks for test case construction backed by database persistence
 - **Trigger**: User navigates to Catalog tab or clicks "Manage Catalog" 
-- **Progression**: View catalog list → Add/edit step → Define metadata (name, description, Java class/method) → Specify SQL tables → Save
-- **Success criteria**: Steps are saved with complete metadata and can be searched/filtered effectively
+- **Progression**: View catalog list → Add/edit step → Define metadata (name, description, Java class/method) → Specify SQL tables → Save to database
+- **Success criteria**: Steps are saved with complete metadata via INSERT/UPDATE prepared statements and can be searched/filtered effectively
 
 ### Test Case Creation
-- **Functionality**: Create named test cases and associate them with ordered sequences of catalog steps
-- **Purpose**: Enables building complex test scenarios from reusable components with explicit execution order
+- **Functionality**: Create named test cases and associate them with ordered sequences of catalog steps with full CRUD operations
+- **Purpose**: Enables building complex test scenarios from reusable components with explicit execution order stored in SQL Server
 - **Trigger**: User clicks "New Test Case" or navigates to Test Cases tab
-- **Progression**: Create test case → Name and describe → Browse catalog → Select steps → Define execution order → Save test case
-- **Success criteria**: Test cases contain properly ordered step sequences that can be executed systematically
+- **Progression**: Create test case → Name and describe → Browse catalog → Select steps → Define execution order → Save via database transaction
+- **Success criteria**: Test cases contain properly ordered step sequences persisted to database with foreign key relationships maintained
 
 ### Step Ordering & Membership Management
-- **Functionality**: Define explicit ProcessOrder values for TestCase-TestStep relationships with drag-and-drop reordering
-- **Purpose**: Ensures test steps execute in correct sequence for reliable test results
+- **Functionality**: Define explicit ProcessOrder values for TestCase-TestStep relationships with transactional updates
+- **Purpose**: Ensures test steps execute in correct sequence with reliable database-backed ordering
 - **Trigger**: User selects steps for a test case or clicks reorder controls
-- **Progression**: Select test case → View current step sequence → Drag to reorder or use up/down controls → System updates ProcessOrder values → Confirm changes
-- **Success criteria**: Steps display in correct order and ProcessOrder values are automatically maintained
+- **Progression**: Select test case → View current step sequence → Drag to reorder or use up/down controls → System updates ProcessOrder via bulk UPDATE transaction → Confirm changes
+- **Success criteria**: Steps display in correct order, ProcessOrder values are automatically maintained via database constraints, and unique constraints prevent conflicts
 
 ### Data Entry Configuration
 - **Functionality**: Display and manage SQL table associations for each test step to guide data preparation
-- **Purpose**: Provides clear guidance on what test data is required for each step
+- **Purpose**: Provides clear guidance on what test data is required for each step with schema references
 - **Trigger**: User views step details or prepares test execution
-- **Progression**: Select step → View associated SQL tables → Display table schemas/requirements → Guide data entry preparation
-- **Success criteria**: Users understand data requirements and can prepare appropriate test datasets
+- **Progression**: Select step → View associated SQL tables → Display table schemas/requirements → Reference column definitions and types
+- **Success criteria**: Users understand data requirements and can prepare appropriate test datasets with proper SQL Server data types
 
 ## Edge Case Handling
 - **Empty Catalog**: Display helpful onboarding message with "Create First Step" action
 - **Duplicate Step Selection**: Prevent adding same step twice to a test case with clear feedback
-- **Orphaned Steps**: Handle catalog step deletion when referenced in existing test cases with warning dialogs
-- **Invalid Order Values**: Automatically recalculate ProcessOrder sequences when gaps or conflicts occur
-- **Large Catalogs**: Implement search/filtering to handle hundreds of catalog steps efficiently
+- **Orphaned Steps**: Handle catalog step deletion when referenced in existing test cases with warning dialogs and foreign key constraint checks
+- **Invalid Order Values**: Automatically recalculate ProcessOrder sequences when gaps or conflicts occur, enforced by unique constraints in database
+- **Large Catalogs**: Implement search/filtering to handle hundreds of catalog steps efficiently with indexed queries
+- **Connection Failures**: Gracefully handle database connection errors with clear error messages and retry options
+- **SQL Injection Attempts**: All queries use prepared statements with parameterized inputs to prevent injection attacks
+- **Concurrent Updates**: Handle simultaneous database modifications with proper transaction isolation
+- **Parameter Validation**: Sanitize all user inputs before binding to query parameters
+- **Timeout Handling**: Respect connection and request timeout settings with appropriate user feedback
 
 ## Design Direction
 The design should feel professional and systematic like enterprise testing tools, emphasizing clarity and efficiency over visual flourish, with a clean interface that reduces cognitive load during complex test planning workflows.

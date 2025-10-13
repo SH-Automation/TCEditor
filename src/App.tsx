@@ -4,25 +4,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CatalogManager } from '@/components/CatalogManager';
 import { TestCaseManager } from '@/components/TestCaseManager';
-import { Flask, TestTube, Database } from '@phosphor-icons/react';
+import { DatabaseManager } from '@/components/DatabaseManager';
+import { QueryExecutor } from '@/components/QueryExecutor';
+import { DatabaseStatusIndicator } from '@/components/DatabaseStatusIndicator';
+import { Flask, TestTube, Database, Code } from '@phosphor-icons/react';
 import { CatalogStep, TestCase, TestStepMembership } from '@/lib/types';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('catalog');
+  const [activeTab, setActiveTab] = useState('database');
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <Flask size={32} className="text-primary" />
-            <div>
-              <h1 className="text-3xl font-bold">Test Case Management System</h1>
-              <p className="text-muted-foreground">
-                Manage software test cases with reusable catalog steps and execution ordering
-              </p>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <Flask size={32} className="text-primary" />
+              <div>
+                <h1 className="text-3xl font-bold">Test Case Management System</h1>
+                <p className="text-muted-foreground">
+                  Manage software test cases with reusable catalog steps and execution ordering
+                </p>
+              </div>
             </div>
+            <DatabaseStatusIndicator />
           </div>
         </div>
       </header>
@@ -30,28 +36,44 @@ function App() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
-            <TabsTrigger value="catalog" className="gap-2">
+          <TabsList className="grid w-full grid-cols-5 max-w-3xl">
+            <TabsTrigger value="database" className="gap-2">
               <Database size={16} />
+              <span className="hidden sm:inline">Database</span>
+            </TabsTrigger>
+            <TabsTrigger value="catalog" className="gap-2">
+              <Flask size={16} />
               <span className="hidden sm:inline">Catalog</span>
             </TabsTrigger>
             <TabsTrigger value="testcases" className="gap-2">
               <TestTube size={16} />
               <span className="hidden sm:inline">Test Cases</span>
             </TabsTrigger>
+            <TabsTrigger value="query" className="gap-2">
+              <Code size={16} />
+              <span className="hidden sm:inline">Query</span>
+            </TabsTrigger>
             <TabsTrigger value="overview" className="gap-2">
-              <Flask size={16} />
+              <Database size={16} />
               <span className="hidden sm:inline">Overview</span>
             </TabsTrigger>
           </TabsList>
 
           <div className="mt-6">
+            <TabsContent value="database" className="space-y-6">
+              <DatabaseManager />
+            </TabsContent>
+
             <TabsContent value="catalog" className="space-y-6">
               <CatalogManager />
             </TabsContent>
 
             <TabsContent value="testcases" className="space-y-6">
               <TestCaseManager />
+            </TabsContent>
+
+            <TabsContent value="query" className="space-y-6">
+              <QueryExecutor />
             </TabsContent>
 
             <TabsContent value="overview" className="space-y-6">
