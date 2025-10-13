@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useKV } from '@github/spark/hooks';
+import { ThemeProvider } from 'next-themes';
+import { Toaster } from '@/components/ui/sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CatalogManager } from '@/components/CatalogManager';
@@ -20,107 +22,110 @@ function App() {
   const [activeTab, setActiveTab] = useState('database');
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <Flask size={32} className="text-primary" />
-              <div>
-                <h1 className="text-3xl font-bold">Test Case Management System</h1>
-                <p className="text-muted-foreground">
-                  Manage software test cases with reusable catalog steps and execution ordering
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <HistoryIndicator />
-              <DatabaseStatusIndicator />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7 max-w-5xl">
-            <TabsTrigger value="database" className="gap-2">
-              <Database size={16} />
-              <span className="hidden sm:inline">Database</span>
-            </TabsTrigger>
-            <TabsTrigger value="catalog" className="gap-2">
-              <Flask size={16} />
-              <span className="hidden sm:inline">Catalog</span>
-            </TabsTrigger>
-            <TabsTrigger value="testcases" className="gap-2">
-              <TestTube size={16} />
-              <span className="hidden sm:inline">Test Cases</span>
-            </TabsTrigger>
-            <TabsTrigger value="dataentry" className="gap-2">
-              <Table size={16} />
-              <span className="hidden sm:inline">Data Entry</span>
-            </TabsTrigger>
-            <TabsTrigger value="query" className="gap-2">
-              <Code size={16} />
-              <span className="hidden sm:inline">Query</span>
-            </TabsTrigger>
-            <TabsTrigger value="history" className="gap-2">
-              <ClockCounterClockwise size={16} />
-              <span className="hidden sm:inline">History</span>
-            </TabsTrigger>
-            <TabsTrigger value="overview" className="gap-2">
-              <Database size={16} />
-              <span className="hidden sm:inline">Overview</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <div className="mt-6">
-            <TabsContent value="database" className="space-y-6">
-              <DatabaseManager />
-            </TabsContent>
-
-            <TabsContent value="catalog" className="space-y-6">
-              <CatalogManager />
-            </TabsContent>
-
-            <TabsContent value="testcases" className="space-y-6">
-              <TestCaseManager />
-            </TabsContent>
-
-            <TabsContent value="dataentry" className="space-y-6">
-              <DataEntryManager />
-            </TabsContent>
-
-            <TabsContent value="query" className="space-y-6">
-              <QueryExecutor />
-            </TabsContent>
-
-            <TabsContent value="history" className="space-y-6">
-              <div className="space-y-6">
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <header className="border-b bg-card">
+          <div className="container mx-auto px-4 py-6">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <Flask size={32} className="text-primary" />
                 <div>
-                  <h2 className="text-2xl font-semibold mb-2">Change History & Analytics</h2>
+                  <h1 className="text-3xl font-bold">Test Case Management System</h1>
                   <p className="text-muted-foreground">
-                    Track all changes with undo/redo capabilities and visual analytics
+                    Manage software test cases with reusable catalog steps and execution ordering
                   </p>
                 </div>
-                
-                <HistoryChart />
-                
-                <HistoryTimeline />
               </div>
-            </TabsContent>
-
-            <TabsContent value="overview" className="space-y-6">
-              <OverviewPanel />
-            </TabsContent>
+              <div className="flex items-center gap-3">
+                <HistoryIndicator />
+                <DatabaseStatusIndicator />
+              </div>
+            </div>
           </div>
-        </Tabs>
-      </main>
-      
-      <HistoryButton />
-    </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="container mx-auto px-4 py-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-7 max-w-5xl">
+              <TabsTrigger value="database" className="gap-2">
+                <Database size={16} />
+                <span className="hidden sm:inline">Database</span>
+              </TabsTrigger>
+              <TabsTrigger value="catalog" className="gap-2">
+                <Flask size={16} />
+                <span className="hidden sm:inline">Catalog</span>
+              </TabsTrigger>
+              <TabsTrigger value="testcases" className="gap-2">
+                <TestTube size={16} />
+                <span className="hidden sm:inline">Test Cases</span>
+              </TabsTrigger>
+              <TabsTrigger value="dataentry" className="gap-2">
+                <Table size={16} />
+                <span className="hidden sm:inline">Data Entry</span>
+              </TabsTrigger>
+              <TabsTrigger value="query" className="gap-2">
+                <Code size={16} />
+                <span className="hidden sm:inline">Query</span>
+              </TabsTrigger>
+              <TabsTrigger value="history" className="gap-2">
+                <ClockCounterClockwise size={16} />
+                <span className="hidden sm:inline">History</span>
+              </TabsTrigger>
+              <TabsTrigger value="overview" className="gap-2">
+                <Database size={16} />
+                <span className="hidden sm:inline">Overview</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <div className="mt-6">
+              <TabsContent value="database" className="space-y-6">
+                <DatabaseManager />
+              </TabsContent>
+
+              <TabsContent value="catalog" className="space-y-6">
+                <CatalogManager />
+              </TabsContent>
+
+              <TabsContent value="testcases" className="space-y-6">
+                <TestCaseManager />
+              </TabsContent>
+
+              <TabsContent value="dataentry" className="space-y-6">
+                <DataEntryManager />
+              </TabsContent>
+
+              <TabsContent value="query" className="space-y-6">
+                <QueryExecutor />
+              </TabsContent>
+
+              <TabsContent value="history" className="space-y-6">
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold mb-2">Change History & Analytics</h2>
+                    <p className="text-muted-foreground">
+                      Track all changes with undo/redo capabilities and visual analytics
+                    </p>
+                  </div>
+                  
+                  <HistoryChart />
+                  
+                  <HistoryTimeline />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="overview" className="space-y-6">
+                <OverviewPanel />
+              </TabsContent>
+            </div>
+          </Tabs>
+        </main>
+        
+        <HistoryButton />
+      </div>
+      <Toaster />
+    </ThemeProvider>
   );
 }
 
