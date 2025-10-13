@@ -61,6 +61,13 @@ A comprehensive application for managing software test cases with reusable test 
 - **Progression**: Select step → View associated SQL tables → Display table schemas/requirements → Reference column definitions and types
 - **Success criteria**: Users understand data requirements and can prepare appropriate test datasets with proper SQL Server data types
 
+### Dynamic Data Entry Grid
+- **Functionality**: Automatically generate editable data grids based on SQL Server table schema introspection using INFORMATION_SCHEMA.COLUMNS
+- **Purpose**: Enable users to manage test data directly in the application with automatic schema-driven UI generation
+- **Trigger**: User navigates to Data Entry tab and selects a catalog step
+- **Progression**: Select catalog step → System queries INFORMATION_SCHEMA for table schema → Generate grid with columns matching DB schema → Add/edit/delete rows → Validate against column constraints → Save via prepared statements
+- **Success criteria**: Grid automatically updates when catalog changes, columns display correct data types, validation enforces nullable/required constraints, and all operations use prepared statements for security
+
 ## Edge Case Handling
 - **Empty Catalog**: Display helpful onboarding message with "Create First Step" action
 - **Duplicate Step Selection**: Prevent adding same step twice to a test case with clear feedback
@@ -72,6 +79,14 @@ A comprehensive application for managing software test cases with reusable test 
 - **Concurrent Updates**: Handle simultaneous database modifications with proper transaction isolation
 - **Parameter Validation**: Sanitize all user inputs before binding to query parameters
 - **Timeout Handling**: Respect connection and request timeout settings with appropriate user feedback
+- **Schema Changes**: Cache table schemas with 5-minute TTL and provide manual refresh to detect schema updates
+- **Invalid Data Types**: Validate user input against column data types (int, varchar, datetime, etc.) before submission
+- **Required Fields**: Enforce NOT NULL constraints with clear visual indicators and validation messages
+- **Primary Key Conflicts**: Prevent manual editing of auto-generated identity columns
+- **Foreign Key Violations**: Display referenced table information and validate FK relationships before insert/update
+- **Large Result Sets**: Limit data grid queries to 100 rows by default with pagination support
+- **No Database Connection**: Show friendly message with link to database settings when not connected
+- **Tables Without Primary Keys**: Handle gracefully with warning that edit/delete may be limited
 
 ## Design Direction
 The design should feel professional and systematic like enterprise testing tools, emphasizing clarity and efficiency over visual flourish, with a clean interface that reduces cognitive load during complex test planning workflows.

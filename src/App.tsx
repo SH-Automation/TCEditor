@@ -7,7 +7,8 @@ import { TestCaseManager } from '@/components/TestCaseManager';
 import { DatabaseManager } from '@/components/DatabaseManager';
 import { QueryExecutor } from '@/components/QueryExecutor';
 import { DatabaseStatusIndicator } from '@/components/DatabaseStatusIndicator';
-import { Flask, TestTube, Database, Code } from '@phosphor-icons/react';
+import { DataEntryManager } from '@/components/DataEntryManager';
+import { Flask, TestTube, Database, Code, Table } from '@phosphor-icons/react';
 import { CatalogStep, TestCase, TestStepMembership } from '@/lib/types';
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 max-w-3xl">
+          <TabsList className="grid w-full grid-cols-6 max-w-4xl">
             <TabsTrigger value="database" className="gap-2">
               <Database size={16} />
               <span className="hidden sm:inline">Database</span>
@@ -48,6 +49,10 @@ function App() {
             <TabsTrigger value="testcases" className="gap-2">
               <TestTube size={16} />
               <span className="hidden sm:inline">Test Cases</span>
+            </TabsTrigger>
+            <TabsTrigger value="dataentry" className="gap-2">
+              <Table size={16} />
+              <span className="hidden sm:inline">Data Entry</span>
             </TabsTrigger>
             <TabsTrigger value="query" className="gap-2">
               <Code size={16} />
@@ -70,6 +75,10 @@ function App() {
 
             <TabsContent value="testcases" className="space-y-6">
               <TestCaseManager />
+            </TabsContent>
+
+            <TabsContent value="dataentry" className="space-y-6">
+              <DataEntryManager />
             </TabsContent>
 
             <TabsContent value="query" className="space-y-6">
