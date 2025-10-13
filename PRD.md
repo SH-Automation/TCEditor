@@ -68,6 +68,14 @@ A comprehensive application for managing software test cases with reusable test 
 - **Progression**: Select catalog step → System queries INFORMATION_SCHEMA for table schema → Generate grid with columns matching DB schema → Add/edit/delete rows → Validate against column constraints → Save via prepared statements
 - **Success criteria**: Grid automatically updates when catalog changes, columns display correct data types, validation enforces nullable/required constraints, and all operations use prepared statements for security
 
+### Undo/Redo with Visual History Timeline
+- **Functionality**: Comprehensive change tracking with full undo/redo capabilities, visual timeline display, and detailed analytics
+- **Purpose**: Allow users to safely experiment with changes, recover from mistakes, and understand system usage patterns over time
+- **Trigger**: User performs any create/update/delete/reorder action, or clicks History tab or floating history button
+- **Progression**: System automatically logs change → User can undo (Ctrl+Z) or redo (Ctrl+Y) → View timeline in sidebar or dedicated tab → Click any history entry to jump to that state → Add comments/notes to changes → View analytics charts showing change patterns
+- **Success criteria**: All CRUD operations are tracked with complete state snapshots, undo/redo works bidirectionally, timeline shows clear visual indicators of current position, keyboard shortcuts work globally, and charts display actionable insights about change patterns
+
+
 ## Edge Case Handling
 - **Empty Catalog**: Display helpful onboarding message with "Create First Step" action
 - **Duplicate Step Selection**: Prevent adding same step twice to a test case with clear feedback
@@ -87,6 +95,10 @@ A comprehensive application for managing software test cases with reusable test 
 - **Large Result Sets**: Limit data grid queries to 100 rows by default with pagination support
 - **No Database Connection**: Show friendly message with link to database settings when not connected
 - **Tables Without Primary Keys**: Handle gracefully with warning that edit/delete may be limited
+- **History Overflow**: Automatically prune history beyond 100 entries (configurable) to prevent excessive storage usage
+- **Concurrent History Changes**: Handle multiple browser tabs gracefully with eventual consistency
+- **Invalid History State**: Validate history entries before applying to prevent corrupted states
+- **Lost Undo Context**: Clearly indicate when undo/redo is unavailable with helpful messaging
 
 ## Design Direction
 The design should feel professional and systematic like enterprise testing tools, emphasizing clarity and efficiency over visual flourish, with a clean interface that reduces cognitive load during complex test planning workflows.

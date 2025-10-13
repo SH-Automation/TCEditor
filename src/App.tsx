@@ -8,7 +8,12 @@ import { DatabaseManager } from '@/components/DatabaseManager';
 import { QueryExecutor } from '@/components/QueryExecutor';
 import { DatabaseStatusIndicator } from '@/components/DatabaseStatusIndicator';
 import { DataEntryManager } from '@/components/DataEntryManager';
-import { Flask, TestTube, Database, Code, Table } from '@phosphor-icons/react';
+import { HistoryButton } from '@/components/HistoryButton';
+import { HistoryTimeline } from '@/components/HistoryTimeline';
+import { HistoryChart } from '@/components/HistoryChart';
+import { HistoryDemo } from '@/components/HistoryDemo';
+import { HistoryIndicator } from '@/components/HistoryIndicator';
+import { Flask, TestTube, Database, Code, Table, ClockCounterClockwise } from '@phosphor-icons/react';
 import { CatalogStep, TestCase, TestStepMembership } from '@/lib/types';
 
 function App() {
@@ -29,7 +34,10 @@ function App() {
                 </p>
               </div>
             </div>
-            <DatabaseStatusIndicator />
+            <div className="flex items-center gap-3">
+              <HistoryIndicator />
+              <DatabaseStatusIndicator />
+            </div>
           </div>
         </div>
       </header>
@@ -37,7 +45,7 @@ function App() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 max-w-4xl">
+          <TabsList className="grid w-full grid-cols-7 max-w-5xl">
             <TabsTrigger value="database" className="gap-2">
               <Database size={16} />
               <span className="hidden sm:inline">Database</span>
@@ -57,6 +65,10 @@ function App() {
             <TabsTrigger value="query" className="gap-2">
               <Code size={16} />
               <span className="hidden sm:inline">Query</span>
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-2">
+              <ClockCounterClockwise size={16} />
+              <span className="hidden sm:inline">History</span>
             </TabsTrigger>
             <TabsTrigger value="overview" className="gap-2">
               <Database size={16} />
@@ -85,12 +97,29 @@ function App() {
               <QueryExecutor />
             </TabsContent>
 
+            <TabsContent value="history" className="space-y-6">
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-semibold mb-2">Change History & Analytics</h2>
+                  <p className="text-muted-foreground">
+                    Track all changes with undo/redo capabilities and visual analytics
+                  </p>
+                </div>
+                
+                <HistoryChart />
+                
+                <HistoryTimeline />
+              </div>
+            </TabsContent>
+
             <TabsContent value="overview" className="space-y-6">
               <OverviewPanel />
             </TabsContent>
           </div>
         </Tabs>
       </main>
+      
+      <HistoryButton />
     </div>
   );
 }
@@ -140,39 +169,43 @@ function OverviewPanel() {
         />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Start Guide</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <h4 className="font-semibold">1. Build Your Catalog</h4>
-              <p className="text-sm text-muted-foreground">
-                Create reusable test steps with Java class/method references and SQL table associations.
-              </p>
+      <div className="grid gap-6 md:grid-cols-2">
+        <HistoryDemo />
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Start Guide</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <h4 className="font-semibold">1. Build Your Catalog</h4>
+                <p className="text-sm text-muted-foreground">
+                  Create reusable test steps with Java class/method references and SQL table associations.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold">2. Create Test Cases</h4>
+                <p className="text-sm text-muted-foreground">
+                  Define test scenarios and select steps from your catalog to build comprehensive test flows.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold">3. Order Execution Steps</h4>
+                <p className="text-sm text-muted-foreground">
+                  Arrange steps in the correct sequence with explicit ProcessOrder values for reliable test execution.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold">4. Execute & Validate</h4>
+                <p className="text-sm text-muted-foreground">
+                  Use the structured test cases with Java class references and data requirements for systematic testing.
+                </p>
+              </div>
             </div>
-            <div className="space-y-2">
-              <h4 className="font-semibold">2. Create Test Cases</h4>
-              <p className="text-sm text-muted-foreground">
-                Define test scenarios and select steps from your catalog to build comprehensive test flows.
-              </p>
-            </div>
-            <div className="space-y-2">
-              <h4 className="font-semibold">3. Order Execution Steps</h4>
-              <p className="text-sm text-muted-foreground">
-                Arrange steps in the correct sequence with explicit ProcessOrder values for reliable test execution.
-              </p>
-            </div>
-            <div className="space-y-2">
-              <h4 className="font-semibold">4. Execute & Validate</h4>
-              <p className="text-sm text-muted-foreground">
-                Use the structured test cases with Java class references and data requirements for systematic testing.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
