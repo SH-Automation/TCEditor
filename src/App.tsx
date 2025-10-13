@@ -14,6 +14,7 @@ import { HistoryTimeline } from '@/components/HistoryTimeline';
 import { HistoryChart } from '@/components/HistoryChart';
 import { HistoryDemo } from '@/components/HistoryDemo';
 import { HistoryIndicator } from '@/components/HistoryIndicator';
+import { ValidationShowcase } from '@/components/ValidationShowcase';
 import { Flask, TestTube, Database, Code, Table, ClockCounterClockwise, ArrowsLeftRight } from '@phosphor-icons/react';
 import { CatalogStep, TestCase, TestStepMembership } from '@/lib/types';
 import { ImportExportManager } from '@/components/ImportExportManager';
@@ -181,41 +182,45 @@ function OverviewPanel() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <HistoryDemo />
+        <ValidationShowcase />
         
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Start Guide</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <h4 className="font-semibold">1. Build Your Catalog</h4>
-                <p className="text-sm text-muted-foreground">
-                  Create reusable test steps with Java class/method references and SQL table associations.
-                </p>
+        <div className="space-y-6">
+          <HistoryDemo />
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Start Guide</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-semibold">1. Build Your Catalog</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Create reusable test steps with Java class/method references and SQL table associations.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold">2. Create Test Cases</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Define test scenarios and select steps from your catalog to build comprehensive test flows.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold">3. Order Execution Steps</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Arrange steps in the correct sequence with explicit ProcessOrder values for reliable test execution.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold">4. Execute & Validate</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Use the structured test cases with Java class references and data requirements for systematic testing.
+                  </p>
+                </div>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold">2. Create Test Cases</h4>
-                <p className="text-sm text-muted-foreground">
-                  Define test scenarios and select steps from your catalog to build comprehensive test flows.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold">3. Order Execution Steps</h4>
-                <p className="text-sm text-muted-foreground">
-                  Arrange steps in the correct sequence with explicit ProcessOrder values for reliable test execution.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold">4. Execute & Validate</h4>
-                <p className="text-sm text-muted-foreground">
-                  Use the structured test cases with Java class references and data requirements for systematic testing.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

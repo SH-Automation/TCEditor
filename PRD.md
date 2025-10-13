@@ -84,6 +84,21 @@ A comprehensive application for managing software test cases with reusable test 
   - **Import**: Upload CSV file → Preview data and auto-detect columns → Map CSV columns to database fields (1:1 mapping) → Validate required fields → Import with error reporting
 - **Success criteria**: CSV templates available for download, column mappings show field descriptions and requirements, validation prevents incomplete mappings, import reports success/failure counts with specific error messages, exports preserve data integrity for round-trip operations
 
+### Robust Input Validation with Smart Suggestions
+- **Functionality**: Real-time validation of all user inputs with contextual error messages, format correction suggestions, and one-click auto-fix options
+- **Purpose**: Prevent invalid data entry, enforce proper TCID formats, ensure uniqueness constraints, and guide users toward correct inputs through helpful suggestions
+- **Trigger**: User types in any form field (TCID, step name, Java class/method, SQL table names, process order)
+- **Progression**: User enters data → System validates on blur/change → Display validation state (error/warning/success) → Show specific error message → Provide actionable suggestion → Offer "Apply" button to auto-fix → Validate corrected input → Enable/disable submit based on validation state
+- **Success criteria**: 
+  - TCID format enforced (TC-###, PROJECT-TC-###-VERSION patterns) with intelligent auto-formatting from partial inputs
+  - Uniqueness checks across TCIDs, step names, and process order values with suggestions for next available values
+  - Java class/method name validation against naming conventions (package.ClassName, camelCaseMethod)
+  - SQL table name validation with schema.table support
+  - Process order conflict detection with automatic next-number suggestions
+  - Real-time feedback without blocking user workflow
+  - Clear visual distinction between errors (red), warnings (orange), and info (blue)
+  - One-click "Apply" buttons for suggested fixes
+  - Form submit disabled until all validations pass
 
 ## Edge Case Handling
 - **Empty Catalog**: Display helpful onboarding message with "Create First Step" action
@@ -116,6 +131,16 @@ A comprehensive application for managing software test cases with reusable test 
 - **Invalid Data in CSV**: Validate data types during import (e.g., text in numeric fields) with row-level error reporting
 - **Empty Export**: Warn user when attempting to export tables with no data
 - **Encoding Issues**: Handle UTF-8 and other character encodings in CSV files gracefully
+- **Invalid TCID Format**: Validate TCID against multiple accepted patterns (TC-###, PROJECT-TC-###, TC-###-VERSION) with smart suggestions for correction
+- **TCID Uniqueness**: Prevent duplicate TCIDs with real-time checking and suggestions for next available ID
+- **Case Sensitivity in TCID**: Enforce uppercase convention with automatic conversion suggestions
+- **Whitespace in IDs**: Detect and suggest hyphen replacement for spaces in identifiers
+- **Special Characters**: Block invalid characters with clear guidance on allowed character sets
+- **Name Duplication**: Warn when test case or step names match existing entries (warning level, not error)
+- **Java Naming Violations**: Validate Java identifiers against language specifications with helpful format examples
+- **SQL Identifier Issues**: Check SQL table names for reserved keywords and invalid characters
+- **Process Order Conflicts**: Auto-suggest next available order number when conflict detected
+- **Partial TCID Entry**: Smart formatting of incomplete TCIDs (e.g., "123" → "TC-123", "TC123" → "TC-123")
 
 ## Design Direction
 The design should feel professional and systematic like enterprise testing tools, emphasizing clarity and efficiency over visual flourish, with a clean interface that reduces cognitive load during complex test planning workflows.

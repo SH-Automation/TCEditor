@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useKV } from '@github/spark/hooks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,7 +14,16 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Plus, X } from '@phosphor-icons/react';
+import { ValidatedInput } from './ValidatedInput';
 import { CatalogStep } from '@/lib/types';
+import { 
+  validateCatalogStepName, 
+  validateJavaClassName, 
+  validateJavaMethodName,
+  validateSQLTableName,
+  ValidationResult 
+} from '@/lib/validation';
+import { toast } from 'sonner';
 
 interface CatalogStepDialogProps {
   step: CatalogStep | null;
@@ -28,6 +38,8 @@ export function CatalogStepDialog({
   onOpenChange,
   onSave,
 }: CatalogStepDialogProps) {
+  const [allSteps] = useKV<CatalogStep[]>("catalog-steps", []);
+  
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -35,7 +47,21 @@ export function CatalogStepDialog({
     javaMethod: '',
     sqlTables: [] as string[],
   });
+  
   const [newTable, setNewTable] = useState('');
+  
+  const [validations, setValidations] = useState<{
+    name?: ValidationResult;
+    javaClass?: ValidationResult;
+    javaMethod?: ValidationResult;
+    newTable?: ValidationResult;
+  }>({});
+
+  const [touched, setTouched] = useState({
+    name: false,
+    javaClass: false,
+    javaMethod: false,
+  });
 
   useEffect(() => {
     if (step) {
@@ -56,15 +82,71 @@ export function CatalogStepDialog({
       });
     }
     setNewTable('');
+    setTouched({ name: false, javaClass: false, javaMethod: false });
+    setValidations({});
   }, [step, open]);
 
+  const validateField = (field: 'name' | 'javaClass' | 'javaMethod' | 'newTable', value: string) => {
+    let result: ValidationResult;
+    
+    if (field === 'name') {
+      result = validateCatalogStepName(value, allSteps || [], step?.id);
+      setValidations(prev => ({ ...prev, name: result }));
+    } else if (field === 'javaClass') {
+      result = validateJavaClassName(value);
+      setValidations(prev => ({ ...prev, javaClass: result }));
+    } else if (field === 'javaMethod') {
+      result = validateJavaMethodName(value);
+      setValidations(prev => ({ ...prev, javaMethod: result }));
+    } else if (field === 'newTable') {
+      result = validateSQLTableName(value);
+      setValidations(prev => ({ ...prev, newTable: result }));
+    } else {
+      return;
+    }
+    
+    return result;
+  };
+
+  const handleFieldChange = (field: 'name' | 'javaClass' | 'javaMethod' | 'description', value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    if (touched[field as 'name' | 'javaClass' | 'javaMethod']) {
+      if (field !== 'description') {
+        validateField(field, value);
+      }
+    }
+  };
+
+  const handleFieldBlur = (field: 'name' | 'javaClass' | 'javaMethod') => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    validateField(field, formData[field]);
+  };
+
+  const handleNewTableChange = (value: string) => {
+    setNewTable(value);
+    if (value.trim()) {
+      validateField('newTable', value);
+    } else {
+      setValidations(prev => ({ ...prev, newTable: undefined }));
+    }
+  };
+
   const handleAddTable = () => {
-    if (newTable.trim() && !formData.sqlTables.includes(newTable.trim())) {
+    const validation = validateField('newTable', newTable);
+    
+    if (!validation?.isValid) {
+      return;
+    }
+    
+    const trimmedTable = newTable.trim();
+    if (trimmedTable && !formData.sqlTables.includes(trimmedTable)) {
       setFormData(prev => ({
         ...prev,
-        sqlTables: [...prev.sqlTables, newTable.trim()],
+        sqlTables: [...prev.sqlTables, trimmedTable],
       }));
       setNewTable('');
+      setValidations(prev => ({ ...prev, newTable: undefined }));
     }
   };
 
@@ -77,6 +159,18 @@ export function CatalogStepDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    setTouched({ name: true, javaClass: true, javaMethod: true });
+    const nameValidation = validateField('name', formData.name);
+    const javaClassValidation = validateField('javaClass', formData.javaClass);
+    const javaMethodValidation = validateField('javaMethod', formData.javaMethod);
+
+    if (!nameValidation?.isValid || !javaClassValidation?.isValid || !javaMethodValidation?.isValid) {
+      toast.error('Please fix validation errors before saving', {
+        description: 'Check the form for error messages and suggestions',
+      });
+      return;
+    }
     
     const now = new Date();
     const stepData: CatalogStep = {
@@ -91,15 +185,23 @@ export function CatalogStepDialog({
     };
 
     onSave(stepData);
+    toast.success(
+      step ? 'Test step updated successfully' : 'Test step created successfully',
+      { description: stepData.name }
+    );
   };
 
-  const isValid = formData.name.trim() && 
-                  formData.javaClass.trim() && 
-                  formData.javaMethod.trim();
+  const isFormValid = 
+    formData.name.trim() && 
+    formData.javaClass.trim() && 
+    formData.javaMethod.trim() &&
+    (!validations.name || validations.name.isValid) &&
+    (!validations.javaClass || validations.javaClass.isValid) &&
+    (!validations.javaMethod || validations.javaMethod.isValid);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {step ? 'Edit Test Step' : 'Create New Test Step'}
@@ -110,74 +212,83 @@ export function CatalogStepDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Step Name</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="e.g., Validate User Login"
-              required
-            />
-          </div>
+          <ValidatedInput
+            id="name"
+            label="Step Name"
+            value={formData.name}
+            onChange={(value) => handleFieldChange('name', value)}
+            onBlur={() => handleFieldBlur('name')}
+            validation={touched.name ? validations.name : undefined}
+            placeholder="e.g., Validate User Login"
+            required
+            description="Unique name for this test step"
+          />
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              onChange={(e) => handleFieldChange('description', e.target.value)}
               placeholder="Brief description of what this step does..."
               rows={3}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="javaClass">Java Class</Label>
-              <Input
-                id="javaClass"
-                value={formData.javaClass}
-                onChange={(e) => setFormData(prev => ({ ...prev, javaClass: e.target.value }))}
-                placeholder="com.example.TestUtils"
-                className="font-mono text-sm"
-                required
-              />
-            </div>
+            <ValidatedInput
+              id="javaClass"
+              label="Java Class"
+              value={formData.javaClass}
+              onChange={(value) => handleFieldChange('javaClass', value)}
+              onBlur={() => handleFieldBlur('javaClass')}
+              validation={touched.javaClass ? validations.javaClass : undefined}
+              placeholder="com.example.TestUtils"
+              className="font-mono text-sm"
+              required
+              description="Fully qualified class name"
+            />
 
-            <div className="space-y-2">
-              <Label htmlFor="javaMethod">Method Name</Label>
-              <Input
-                id="javaMethod"
-                value={formData.javaMethod}
-                onChange={(e) => setFormData(prev => ({ ...prev, javaMethod: e.target.value }))}
-                placeholder="validateLogin"
-                className="font-mono text-sm"
-                required
-              />
-            </div>
+            <ValidatedInput
+              id="javaMethod"
+              label="Method Name"
+              value={formData.javaMethod}
+              onChange={(value) => handleFieldChange('javaMethod', value)}
+              onBlur={() => handleFieldBlur('javaMethod')}
+              validation={touched.javaMethod ? validations.javaMethod : undefined}
+              placeholder="validateLogin"
+              className="font-mono text-sm"
+              required
+              description="camelCase method name"
+            />
           </div>
 
           <div className="space-y-2">
             <Label>SQL Tables</Label>
             <div className="flex gap-2">
-              <Input
-                value={newTable}
-                onChange={(e) => setNewTable(e.target.value)}
-                placeholder="table_name"
-                className="font-mono text-sm"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTable())}
-              />
+              <div className="flex-1">
+                <Input
+                  value={newTable}
+                  onChange={(e) => handleNewTableChange(e.target.value)}
+                  placeholder="table_name or schema.table_name"
+                  className="font-mono text-sm"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTable())}
+                />
+              </div>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={handleAddTable}
-                disabled={!newTable.trim()}
+                disabled={!newTable.trim() || (validations.newTable && !validations.newTable.isValid)}
               >
                 <Plus size={14} />
               </Button>
             </div>
+            
+            {validations.newTable && !validations.newTable.isValid && (
+              <p className="text-sm text-destructive">{validations.newTable.error}</p>
+            )}
             
             {formData.sqlTables.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
@@ -205,7 +316,7 @@ export function CatalogStepDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={!isValid}>
+            <Button type="submit" disabled={!isFormValid}>
               {step ? 'Update Step' : 'Create Step'}
             </Button>
           </DialogFooter>
