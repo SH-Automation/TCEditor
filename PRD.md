@@ -75,6 +75,15 @@ A comprehensive application for managing software test cases with reusable test 
 - **Progression**: System automatically logs change → User can undo (Ctrl+Z) or redo (Ctrl+Y) → View timeline in sidebar or dedicated tab → Click any history entry to jump to that state → Add comments/notes to changes → View analytics charts showing change patterns
 - **Success criteria**: All CRUD operations are tracked with complete state snapshots, undo/redo works bidirectionally, timeline shows clear visual indicators of current position, keyboard shortcuts work globally, and charts display actionable insights about change patterns
 
+### Import/Export with Column Mapping
+- **Functionality**: Bulk import and export of test data via CSV files with intelligent column mapping interface
+- **Purpose**: Enable rapid data migration, backup/restore operations, and integration with external systems through spreadsheet-based workflows
+- **Trigger**: User navigates to Import/Export tab or clicks import/export buttons
+- **Progression**: 
+  - **Export**: Select table(s) → Choose format (CSV/JSON) → Download file(s) with current data
+  - **Import**: Upload CSV file → Preview data and auto-detect columns → Map CSV columns to database fields (1:1 mapping) → Validate required fields → Import with error reporting
+- **Success criteria**: CSV templates available for download, column mappings show field descriptions and requirements, validation prevents incomplete mappings, import reports success/failure counts with specific error messages, exports preserve data integrity for round-trip operations
+
 
 ## Edge Case Handling
 - **Empty Catalog**: Display helpful onboarding message with "Create First Step" action
@@ -99,6 +108,14 @@ A comprehensive application for managing software test cases with reusable test 
 - **Concurrent History Changes**: Handle multiple browser tabs gracefully with eventual consistency
 - **Invalid History State**: Validate history entries before applying to prevent corrupted states
 - **Lost Undo Context**: Clearly indicate when undo/redo is unavailable with helpful messaging
+- **Malformed CSV Files**: Detect and report parsing errors with specific line numbers and format issues
+- **Column Mapping Conflicts**: Prevent multiple CSV columns mapping to same database field with validation error
+- **Missing Required Fields**: Block import if required database fields are not mapped with clear error messages
+- **Duplicate IDs in Import**: Detect ID conflicts between import data and existing records with merge/skip options
+- **Large Import Files**: Show progress indicator for imports with 100+ rows and prevent UI blocking
+- **Invalid Data in CSV**: Validate data types during import (e.g., text in numeric fields) with row-level error reporting
+- **Empty Export**: Warn user when attempting to export tables with no data
+- **Encoding Issues**: Handle UTF-8 and other character encodings in CSV files gracefully
 
 ## Design Direction
 The design should feel professional and systematic like enterprise testing tools, emphasizing clarity and efficiency over visual flourish, with a clean interface that reduces cognitive load during complex test planning workflows.

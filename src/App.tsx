@@ -14,8 +14,9 @@ import { HistoryTimeline } from '@/components/HistoryTimeline';
 import { HistoryChart } from '@/components/HistoryChart';
 import { HistoryDemo } from '@/components/HistoryDemo';
 import { HistoryIndicator } from '@/components/HistoryIndicator';
-import { Flask, TestTube, Database, Code, Table, ClockCounterClockwise } from '@phosphor-icons/react';
+import { Flask, TestTube, Database, Code, Table, ClockCounterClockwise, ArrowsLeftRight } from '@phosphor-icons/react';
 import { CatalogStep, TestCase, TestStepMembership } from '@/lib/types';
+import { ImportExportManager } from '@/components/ImportExportManager';
 
 function App() {
   const [activeTab, setActiveTab] = useState('database');
@@ -46,7 +47,7 @@ function App() {
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-7 max-w-5xl">
+            <TabsList className="grid w-full grid-cols-8 max-w-6xl">
               <TabsTrigger value="database" className="gap-2">
                 <Database size={16} />
                 <span className="hidden sm:inline">Database</span>
@@ -62,6 +63,10 @@ function App() {
               <TabsTrigger value="dataentry" className="gap-2">
                 <Table size={16} />
                 <span className="hidden sm:inline">Data Entry</span>
+              </TabsTrigger>
+              <TabsTrigger value="import-export" className="gap-2">
+                <ArrowsLeftRight size={16} />
+                <span className="hidden sm:inline">Import/Export</span>
               </TabsTrigger>
               <TabsTrigger value="query" className="gap-2">
                 <Code size={16} />
@@ -92,6 +97,10 @@ function App() {
 
               <TabsContent value="dataentry" className="space-y-6">
                 <DataEntryManager />
+              </TabsContent>
+
+              <TabsContent value="import-export" className="space-y-6">
+                <ImportExportManager />
               </TabsContent>
 
               <TabsContent value="query" className="space-y-6">
