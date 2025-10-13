@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,8 +21,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('database');
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
         {/* Header */}
         <header className="border-b bg-card">
           <div className="container mx-auto px-4 py-6">
@@ -123,9 +121,8 @@ function App() {
         </main>
         
         <HistoryButton />
+        <Toaster />
       </div>
-      <Toaster />
-    </ThemeProvider>
   );
 }
 
