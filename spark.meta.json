@@ -1,4 +1,9 @@
 {
-  "templateVersion": 1,
-  "dbType": "kv"
+  "spark": {
+    "owner": "SH-Automation",
+    "repository": "TCEditor",
+    "enabled": true,
+    "initialShaFile": ".spark-initial-sha",
+    "version": 1
+  }
 }
